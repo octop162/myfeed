@@ -1,0 +1,14 @@
+type(scope): subject
+
+body
+
+footer
+
+# Type種別:
+# feat: 新機能
+# fix: バグ修正
+# docs: ドキュメント
+# style: コードスタイル
+# refactor: リファクタリング
+# test: テスト
+# chore: その他

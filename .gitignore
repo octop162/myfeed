@@ -1,0 +1,51 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test binaries
+*.test
+*.out
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.bak
+*.swo
+
+# Build artifacts
+bin/
+pkg/
+dist/
+build/
+
+# Dependency directories
+vendor/
+node_modules/
+
+# Log files
+*.log
+
+# Environment variables
+.env
+.env.*
+.DS_Store
+
+# Go
+/go.mod
+/go.sum
+
+# Next.js
+.next/
+out/
+
+# PostgreSQL
+*.session
+*.backup
+*.dump
+*.sql.gz
+
+# devcontainer
+.devcontainer/

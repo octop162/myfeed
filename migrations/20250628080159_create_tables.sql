@@ -1,0 +1,41 @@
+-- 20250628080159_create_tables.sql
+
+CREATE TABLE IF NOT EXISTS folders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    user_id UUID, -- 将来対応
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS feeds (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    url TEXT NOT NULL UNIQUE,
+    plugin_type VARCHAR(255) NOT NULL,
+    folder_id UUID REFERENCES folders(id) ON DELETE SET NULL,
+    update_interval INTEGER NOT NULL DEFAULT 360, -- minutes
+    last_updated TIMESTAMP WITH TIME ZONE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS articles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    feed_id UUID REFERENCES feeds(id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    content TEXT,
+    url TEXT NOT NULL UNIQUE,
+    published_at TIMESTAMP WITH TIME ZONE,
+    is_read BOOLEAN NOT NULL DEFAULT FALSE,
+    is_later BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS plugins (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    file_path TEXT NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Usersテーブルは将来対応のため、ここでは作成しない

@@ -58,6 +58,15 @@ func NewFolderHandler(s service.FolderService) *FolderHandler {
 //
 // Parameters:
 //   - c: Ginのコンテキスト
+//
+//	@Summary		フォルダ一覧取得
+//	@Description	データベースに保存されているすべてのフォルダを取得します
+//	@Tags			folders
+//	@Accept			json
+//	@Produce		json
+//	@Success		200	{array}		model.Folder	"フォルダ一覧"
+//	@Failure		500	{object}	map[string]string	"サーバー内部エラー"
+//	@Router			/folders [get]
 func (h *FolderHandler) GetAllFolders(c *gin.Context) {
 	folders, err := h.folderService.GetAllFolders()
 	if err != nil {
@@ -79,6 +88,17 @@ func (h *FolderHandler) GetAllFolders(c *gin.Context) {
 //
 // Parameters:
 //   - c: Ginのコンテキスト（URLパラメータ "id" を含む）
+//
+//	@Summary		フォルダ詳細取得
+//	@Description	指定されたIDのフォルダを取得します
+//	@Tags			folders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path		string	true	"フォルダID (UUID)"
+//	@Success		200	{object}	model.Folder	"フォルダ詳細"
+//	@Failure		404	{object}	map[string]string	"フォルダが見つかりません"
+//	@Failure		500	{object}	map[string]string	"サーバー内部エラー"
+//	@Router			/folders/{id} [get]
 func (h *FolderHandler) GetFolderByID(c *gin.Context) {
 	id := c.Param("id")
 	folder, err := h.folderService.GetFolderByID(id)
@@ -110,6 +130,17 @@ func (h *FolderHandler) GetFolderByID(c *gin.Context) {
 //
 // Parameters:
 //   - c: Ginのコンテキスト（JSONボディを含む）
+//
+//	@Summary		フォルダ作成
+//	@Description	新しいフォルダを作成します
+//	@Tags			folders
+//	@Accept			json
+//	@Produce		json
+//	@Param			folder	body		model.Folder	true	"フォルダ情報"
+//	@Success		201		{object}	model.Folder	"作成されたフォルダ"
+//	@Failure		400		{object}	map[string]interface{}	"リクエストボディの形式が不正"
+//	@Failure		500		{object}	map[string]string	"サーバー内部エラー"
+//	@Router			/folders [post]
 func (h *FolderHandler) CreateFolder(c *gin.Context) {
 	var folder model.Folder
 	if err := c.ShouldBindJSON(&folder); err != nil {
@@ -143,6 +174,19 @@ func (h *FolderHandler) CreateFolder(c *gin.Context) {
 //
 // Parameters:
 //   - c: Ginのコンテキスト（URLパラメータ "id" とJSONボディを含む）
+//
+//	@Summary		フォルダ更新
+//	@Description	指定されたIDのフォルダを更新します
+//	@Tags			folders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id		path		string			true	"フォルダID (UUID)"
+//	@Param			folder	body		model.Folder	true	"更新するフォルダ情報"
+//	@Success		200		{object}	model.Folder	"更新されたフォルダ"
+//	@Failure		400		{object}	map[string]interface{}	"リクエストボディの形式が不正"
+//	@Failure		404		{object}	map[string]string	"フォルダが見つかりません"
+//	@Failure		500		{object}	map[string]string	"サーバー内部エラー"
+//	@Router			/folders/{id} [put]
 func (h *FolderHandler) UpdateFolder(c *gin.Context) {
 	id := c.Param("id")
 	var folder model.Folder
@@ -177,6 +221,17 @@ func (h *FolderHandler) UpdateFolder(c *gin.Context) {
 //
 // Parameters:
 //   - c: Ginのコンテキスト（URLパラメータ "id" を含む）
+//
+//	@Summary		フォルダ削除
+//	@Description	指定されたIDのフォルダを削除します
+//	@Tags			folders
+//	@Accept			json
+//	@Produce		json
+//	@Param			id	path	string	true	"フォルダID (UUID)"
+//	@Success		204	"削除成功"
+//	@Failure		404	{object}	map[string]string	"フォルダが見つかりません"
+//	@Failure		500	{object}	map[string]string	"サーバー内部エラー"
+//	@Router			/folders/{id} [delete]
 func (h *FolderHandler) DeleteFolder(c *gin.Context) {
 	id := c.Param("id")
 	err := h.folderService.DeleteFolder(id)

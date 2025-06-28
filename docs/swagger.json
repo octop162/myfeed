@@ -1,0 +1,308 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "RSS フィードリーダーとカスタムスクレイピング機能を提供するAPIサーバー",
+        "title": "FeedApp API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "FeedApp Support",
+            "url": "http://www.feedapp.example.com/support",
+            "email": "support@feedapp.example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/folders": {
+            "get": {
+                "description": "データベースに保存されているすべてのフォルダを取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "フォルダ一覧取得",
+                "responses": {
+                    "200": {
+                        "description": "フォルダ一覧",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Folder"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新しいフォルダを作成します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "フォルダ作成",
+                "parameters": [
+                    {
+                        "description": "フォルダ情報",
+                        "name": "folder",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Folder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "作成されたフォルダ",
+                        "schema": {
+                            "$ref": "#/definitions/model.Folder"
+                        }
+                    },
+                    "400": {
+                        "description": "リクエストボディの形式が不正",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{id}": {
+            "get": {
+                "description": "指定されたIDのフォルダを取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "フォルダ詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フォルダID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "フォルダ詳細",
+                        "schema": {
+                            "$ref": "#/definitions/model.Folder"
+                        }
+                    },
+                    "404": {
+                        "description": "フォルダが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "指定されたIDのフォルダを更新します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "フォルダ更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フォルダID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新するフォルダ情報",
+                        "name": "folder",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Folder"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新されたフォルダ",
+                        "schema": {
+                            "$ref": "#/definitions/model.Folder"
+                        }
+                    },
+                    "400": {
+                        "description": "リクエストボディの形式が不正",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "フォルダが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "指定されたIDのフォルダを削除します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "フォルダ削除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フォルダID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "削除成功"
+                    },
+                    "404": {
+                        "description": "フォルダが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.Folder": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "created_at": {
+                    "description": "作成日時",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "フォルダの一意識別子",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "フォルダ名（必須）",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "将来のマルチユーザー対応用",
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "description": "フォルダ管理API",
+            "name": "folders"
+        },
+        {
+            "description": "フィード管理API",
+            "name": "feeds"
+        },
+        {
+            "description": "記事管理API",
+            "name": "articles"
+        }
+    ]
+}

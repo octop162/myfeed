@@ -1,0 +1,205 @@
+basePath: /api/v1
+definitions:
+  model.Folder:
+    properties:
+      created_at:
+        description: 作成日時
+        type: string
+      id:
+        description: フォルダの一意識別子
+        type: string
+      name:
+        description: フォルダ名（必須）
+        type: string
+      user_id:
+        description: 将来のマルチユーザー対応用
+        type: string
+    required:
+    - name
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@feedapp.example.com
+    name: FeedApp Support
+    url: http://www.feedapp.example.com/support
+  description: RSS フィードリーダーとカスタムスクレイピング機能を提供するAPIサーバー
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: FeedApp API
+  version: "1.0"
+paths:
+  /folders:
+    get:
+      consumes:
+      - application/json
+      description: データベースに保存されているすべてのフォルダを取得します
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: フォルダ一覧
+          schema:
+            items:
+              $ref: '#/definitions/model.Folder'
+            type: array
+        "500":
+          description: サーバー内部エラー
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: フォルダ一覧取得
+      tags:
+      - folders
+    post:
+      consumes:
+      - application/json
+      description: 新しいフォルダを作成します
+      parameters:
+      - description: フォルダ情報
+        in: body
+        name: folder
+        required: true
+        schema:
+          $ref: '#/definitions/model.Folder'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 作成されたフォルダ
+          schema:
+            $ref: '#/definitions/model.Folder'
+        "400":
+          description: リクエストボディの形式が不正
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: サーバー内部エラー
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: フォルダ作成
+      tags:
+      - folders
+  /folders/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 指定されたIDのフォルダを削除します
+      parameters:
+      - description: フォルダID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: 削除成功
+        "404":
+          description: フォルダが見つかりません
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: サーバー内部エラー
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: フォルダ削除
+      tags:
+      - folders
+    get:
+      consumes:
+      - application/json
+      description: 指定されたIDのフォルダを取得します
+      parameters:
+      - description: フォルダID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: フォルダ詳細
+          schema:
+            $ref: '#/definitions/model.Folder'
+        "404":
+          description: フォルダが見つかりません
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: サーバー内部エラー
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: フォルダ詳細取得
+      tags:
+      - folders
+    put:
+      consumes:
+      - application/json
+      description: 指定されたIDのフォルダを更新します
+      parameters:
+      - description: フォルダID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: 更新するフォルダ情報
+        in: body
+        name: folder
+        required: true
+        schema:
+          $ref: '#/definitions/model.Folder'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新されたフォルダ
+          schema:
+            $ref: '#/definitions/model.Folder'
+        "400":
+          description: リクエストボディの形式が不正
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: フォルダが見つかりません
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: サーバー内部エラー
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: フォルダ更新
+      tags:
+      - folders
+schemes:
+- http
+- https
+swagger: "2.0"
+tags:
+- description: フォルダ管理API
+  name: folders
+- description: フィード管理API
+  name: feeds
+- description: 記事管理API
+  name: articles

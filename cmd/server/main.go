@@ -1,3 +1,30 @@
+// Package main フィードアプリケーションのメインエントリーポイント
+//
+//	@title			FeedApp API
+//	@version		1.0
+//	@description	RSS フィードリーダーとカスタムスクレイピング機能を提供するAPIサーバー
+//	@termsOfService	http://swagger.io/terms/
+//
+//	@contact.name	FeedApp Support
+//	@contact.url	http://www.feedapp.example.com/support
+//	@contact.email	support@feedapp.example.com
+//
+//	@license.name	MIT
+//	@license.url	https://opensource.org/licenses/MIT
+//
+//	@host		localhost:8080
+//	@BasePath	/api/v1
+//
+//	@schemes	http https
+//
+//	@tag.name		folders
+//	@tag.description	フォルダ管理API
+//
+//	@tag.name		feeds
+//	@tag.description	フィード管理API
+//
+//	@tag.name		articles
+//	@tag.description	記事管理API
 package main
 
 import (
@@ -13,10 +40,14 @@ import (
 	_ "github.com/mattn/go-sqlite3" // SQLiteドライバー
 	_ "github.com/lib/pq" // PostgreSQLドライバー
 
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
 	"feedapp/internal/config"
 	"feedapp/internal/handler"
 	"feedapp/internal/repository"
 	"feedapp/internal/service"
+	_ "feedapp/docs" // Swagger docs
 )
 
 func main() {
@@ -78,6 +109,9 @@ func main() {
 			"message": "pong",
 		})
 	})
+
+	// Swagger エンドポイント
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// ルーティングの設定
 	v1 := r.Group("/api/v1")

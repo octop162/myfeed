@@ -24,6 +24,434 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/articles": {
+            "get": {
+                "description": "データベースに保存されているすべての記事を取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articles"
+                ],
+                "summary": "記事一覧取得",
+                "responses": {
+                    "200": {
+                        "description": "記事一覧",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Article"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/later": {
+            "get": {
+                "description": "「後で読む」に設定された記事の一覧を取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articles"
+                ],
+                "summary": "後で読む記事一覧取得",
+                "responses": {
+                    "200": {
+                        "description": "後で読む記事一覧",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Article"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/{id}": {
+            "get": {
+                "description": "指定されたIDの記事を取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articles"
+                ],
+                "summary": "記事詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "記事ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "記事詳細",
+                        "schema": {
+                            "$ref": "#/definitions/model.Article"
+                        }
+                    },
+                    "404": {
+                        "description": "記事が見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/articles/{id}/status": {
+            "put": {
+                "description": "指定されたIDの記事の読了状態や後で読む状態を更新します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "articles"
+                ],
+                "summary": "記事状態更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "記事ID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "記事状態情報",
+                        "name": "status",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.ArticleStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新された記事",
+                        "schema": {
+                            "$ref": "#/definitions/model.Article"
+                        }
+                    },
+                    "400": {
+                        "description": "リクエストボディの形式が不正",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "記事が見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/feeds": {
+            "get": {
+                "description": "データベースに保存されているすべてのフィードを取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeds"
+                ],
+                "summary": "フィード一覧取得",
+                "responses": {
+                    "200": {
+                        "description": "フィード一覧",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Feed"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "新しいフィードを作成します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeds"
+                ],
+                "summary": "フィード作成",
+                "parameters": [
+                    {
+                        "description": "フィード情報",
+                        "name": "feed",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Feed"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "作成されたフィード",
+                        "schema": {
+                            "$ref": "#/definitions/model.Feed"
+                        }
+                    },
+                    "400": {
+                        "description": "リクエストボディの形式が不正",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/feeds/{id}": {
+            "get": {
+                "description": "指定されたIDのフィードを取得します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeds"
+                ],
+                "summary": "フィード詳細取得",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フィードID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "フィード詳細",
+                        "schema": {
+                            "$ref": "#/definitions/model.Feed"
+                        }
+                    },
+                    "404": {
+                        "description": "フィードが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "指定されたIDのフィードを更新します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeds"
+                ],
+                "summary": "フィード更新",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フィードID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新するフィード情報",
+                        "name": "feed",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Feed"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新されたフィード",
+                        "schema": {
+                            "$ref": "#/definitions/model.Feed"
+                        }
+                    },
+                    "400": {
+                        "description": "リクエストボディの形式が不正",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "フィードが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "指定されたIDのフィードを削除します",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "feeds"
+                ],
+                "summary": "フィード削除",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "フィードID (UUID)",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "削除成功"
+                    },
+                    "404": {
+                        "description": "フィードが見つかりません",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "サーバー内部エラー",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/folders": {
             "get": {
                 "description": "データベースに保存されているすべてのフォルダを取得します",
@@ -268,6 +696,102 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.ArticleStatusRequest": {
+            "type": "object",
+            "properties": {
+                "is_later": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "is_read": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "model.Article": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "記事本文（省略可能）",
+                    "type": "string"
+                },
+                "created_at": {
+                    "description": "作成日時",
+                    "type": "string"
+                },
+                "feed_id": {
+                    "description": "所属フィードID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "記事の一意識別子",
+                    "type": "string"
+                },
+                "is_later": {
+                    "description": "後で見るフラグ",
+                    "type": "boolean"
+                },
+                "is_read": {
+                    "description": "既読フラグ",
+                    "type": "boolean"
+                },
+                "published_at": {
+                    "description": "公開日時",
+                    "type": "string"
+                },
+                "title": {
+                    "description": "記事タイトル",
+                    "type": "string"
+                },
+                "url": {
+                    "description": "記事の元URL",
+                    "type": "string"
+                }
+            }
+        },
+        "model.Feed": {
+            "type": "object",
+            "required": [
+                "name",
+                "plugin_type",
+                "url"
+            ],
+            "properties": {
+                "created_at": {
+                    "description": "作成日時",
+                    "type": "string"
+                },
+                "folder_id": {
+                    "description": "所属フォルダID",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "フィードの一意識別子",
+                    "type": "string"
+                },
+                "last_updated": {
+                    "description": "最終更新日時",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "フィード名（必須）",
+                    "type": "string"
+                },
+                "plugin_type": {
+                    "description": "プラグイン種別（必須）",
+                    "type": "string"
+                },
+                "update_interval": {
+                    "description": "更新間隔（分）",
+                    "type": "integer"
+                },
+                "url": {
+                    "description": "フィードURL（必須、URL形式）",
+                    "type": "string"
+                }
+            }
+        },
         "model.Folder": {
             "type": "object",
             "required": [
